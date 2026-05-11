@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rodoluki Academy | Inbound</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root { --primary: #1A2B56; --accent: #252d8f; --light: #5FC9FF; --bg: #F8FAFC; --white: #FFFFFF; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg); color: #1E293B; }
+
+        /* TELA DE AUTENTICAÇÃO (LOGIN) */
+        #authWrapper {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            z-index: 5000; display: flex; justify-content: center; align-items: center;
+        }
+        .auth-container {
+            background: white; padding: 35px; border-radius: 20px; width: 90%; max-width: 380px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3); text-align: center;
+        }
+        .auth-container img { width: 160px; height: auto; margin-bottom: 25px; display: block; margin-left: auto; margin-right: auto; }
+
+        .input-group { margin-bottom: 18px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 6px; font-weight: 600; color: #475569; font-size: 0.85rem; }
+        .input-group input { width: 100%; padding: 12px; border: 1.5px solid #E2E8F0; border-radius: 8px; outline: none; font-size: 1rem; }
+        .input-group input:focus { border-color: var(--light); box-shadow: 0 0 0 3px rgba(95, 201, 255, 0.1); }
+
+        .btn-primary { 
+            width: 100%; background: var(--primary); color: white; border: none; padding: 14px; 
+            border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .btn-primary:hover { background: var(--light); color: var(--primary); }
+
+        /* BARRA DE NAVEGAÇÃO FIXA */
+        .nav-bar {
+            background: var(--primary); padding: 10px 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .nav-icons { display: flex; gap: 20px; color: white; font-size: 1.2rem; }
+        .nav-icons i { cursor: pointer; transition: 0.3s; padding: 8px; border-radius: 50%; }
+        .nav-icons i:hover { background: rgba(255,255,255,0.1); color: var(--light); }
+
+        /* CONTEÚDO PRINCIPAL */
+        #mainContent { display: none; }
+        .hero { background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); color: white; padding: 50px 20px; text-align: center; }
+        .container { max-width: 1100px; margin: -40px auto 50px; padding: 0 20px; }
+        
+        .grid-modulos { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+        .card-main { background: white; padding: 25px; border-radius: 12px; border: 1px solid #E2E8F0; cursor: pointer; transition: 0.3s; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .card-main:hover { transform: translateY(-5px); border-color: var(--light); }
+        .card-main i { font-size: 2.5rem; color: var(--accent); margin-bottom: 15px; display: block; }
+
+        /* MODAL DE ESTUDO */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; backdrop-filter: blur(5px); }
+        .modal-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 95%; max-width: 900px; height: 85vh; background: white; border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; }
+        .modal-header { background: var(--primary); color: white; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { padding: 30px; overflow-y: auto; flex-grow: 1; }
+
+        /* ESTILO DOS PASSOS (FLUXO) */
+        .passo-item { 
+            display: flex; align-items: flex-start; gap: 15px; background: #fff; 
+            padding: 15px; margin-bottom: 10px; border: 1px solid #e2e8f0; 
+            border-radius: 10px; border-left: 5px solid var(--primary);
+        }
+        .passo-num { 
+            background: var(--primary); color: white; width: 30px; height: 30px; 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            flex-shrink: 0; font-weight: bold; font-size: 0.9rem;
+        }
+        .btn-pdf { background: #e11d48; color: white; padding: 10px 18px; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-weight: bold; font-size: 0.85rem; }
+
+        /* ALERT CUSTOM */
+        #customAlert { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(26, 43, 86, 0.95); z-index: 6000; justify-content: center; align-items: center; }
+        .alert-box { background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 400px; width: 90%; }
+        
+        .secao-operacoes { background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; margin-top: 20px; }
+        .grid-operacoes { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-top: 15px; }
+        .btn-op { background: white; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; cursor: pointer; text-align: center; font-weight: 700; font-size: 0.8rem; }
+        .btn-op:hover { background: var(--accent); color: white; }
+    </style>
+</head>
+<body>
+
+    <div id="authWrapper">
+        <div class="auth-container">
+            <img src="assets/logo.png" alt="Rodoluki" onerror="this.src='https://via.placeholder.com/160x50?text=Rodoluki'">
+            
+            <div id="welcomeSection">
+                <h1 style="color:var(--primary); font-size: 1.6rem; margin-bottom: 10px;">Rodoluki Academy</h1>
+                <p style="color:#64748b; font-size: 0.9rem; margin-bottom: 25px;">Bem-vindo ao portal de integração e treinamento técnico.</p>
+                <button class="btn-primary" onclick="showLogin()">INICIAR <i class="fas fa-arrow-right"></i></button>
+            </div>
+
+            <div id="loginSection" style="display: none;">
+                <div class="input-group">
+                    <label>Usuário</label>
+                    <input type="text" id="userInput" placeholder="Usuário">
+                </div>
+                <div class="input-group">
+                    <label>Senha</label>
+                    <input type="password" id="passInput" placeholder="Senha">
+                </div>
+                <button class="btn-primary" onclick="checkLogin()">ENTRAR</button>
+                <p id="loginError" style="color:red; font-size: 0.8rem; margin-top: 10px; display: none;">Dados incorretos!</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="mainContent">
+        <nav class="nav-bar">
+            <img src="assets/logo.png" alt="Rodoluki" style="height: 30px; filter: brightness(0) invert(1);">
+            <div class="nav-icons">
+                <i class="fas fa-home" title="Início" onclick="fecharModal()"></i>
+                <i class="fas fa-sign-out-alt" title="Sair" onclick="location.reload()"></i>
+            </div>
+        </nav>
+
+        <section class="hero">
+            <h1>Módulos de Treinamento</h1>
+            <p>Selecione uma área do Inbound para visualizar os procedimentos.</p>
+        </section>
+
+        <div class="container">
+            <div class="grid-modulos">
+                <div class="card-main" onclick="abrirModulo('recebimento')">
+                    <i class="fas fa-truck-loading"></i>
+                    <h3>Recebimento</h3>
+                    <p>Normas de descarga e entrada.</p>
+                </div>
+                <div class="card-main" onclick="abrirModulo('conferencia')">
+                    <i class="fas fa-clipboard-check"></i>
+                    <h3>Conferência</h3>
+                    <p>Auditoria e qualidade física.</p>
+                </div>
+                <div class="card-main" onclick="abrirModulo('armazenagem')">
+                    <i class="fas fa-warehouse"></i>
+                    <h3>Armazenagem</h3>
+                    <p>Put-away e organização.</p>
+                </div>
+                <div class="card-main" onclick="abrirModulo('controle')">
+                    <i class="fas fa-barcode"></i>
+                    <h3>Controle</h3>
+                    <p>Acuracidade e Inventário.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="customAlert">
+            <div class="alert-box">
+                <i class="fas fa-user-shield" style="font-size: 3rem; color: var(--light); margin-bottom: 15px; display: block;"></i>
+                <h3 id="alertTitle">Operação</h3>
+                <p id="alertMsg" style="color: #64748b; margin-bottom: 20px;"></p>
+                <button class="btn-primary" onclick="closeAlert()">PROSSEGUIR</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalEstudo" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitulo">TÍTULO</h2>
+                <span onclick="fecharModal()" style="cursor:pointer; font-size: 25px;">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="infoTecnica"></div>
+                <div class="secao-operacoes">
+                    <h4>Selecione o Cliente para o fluxo específico:</h4>
+                    <div class="grid-operacoes" id="gridOperacoes"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const users = { "rodoluki": "123", "operador": "entrada" };
+        let moduloAtivo = "";
+        let operacaoPendente = "";
+
+        // AUTH
+        function showLogin() { document.getElementById('welcomeSection').style.display = 'none'; document.getElementById('loginSection').style.display = 'block'; }
+        function checkLogin() {
+            const u = document.getElementById('userInput').value;
+            const p = document.getElementById('passInput').value;
+            if(users[u] && users[u] === p) {
+                document.getElementById('authWrapper').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+            } else { document.getElementById('loginError').style.display = 'block'; }
+        }
+
+        // DADOS TÉCNICOS DETALHADOS (RAPPI)
+        const fluxosClientes = {
+            "Rappi": {
+                pdfUrl: "I.T RECEBIMENTO - PDF.pdf",
+                recebimento: [
+                    { icon: "fa-file-invoice", t: "Localização das NFs", d: "As notas fiscais ficam no acrílico ao lado da expedição." },
+                    { icon: "fa-clock", t: "Ordem de Chegada", d: "Siga rigorosamente a ordem das senhas. Chame sempre a próxima." },
+                    { icon: "fa-desktop", t: "Sistema WMS", d: "Utilize o Galileo/Copérnico. Vá no menu 'Receiving' (Recebimento)." },
+                    { icon: "fa-barcode", t: "Operação Cega", d: "Selecione a opção 'Recebimento Cego RA-30'." },
+                    { icon: "fa-search", t: "Localizar P.O", d: "O número da P.O está no rodapé da NF (Pedido Cliente)." },
+                    { icon: "fa-edit", t: "Document Type", d: "Selecione 'PO' e digite o número identificado." },
+                    { icon: "fa-box", t: "Conferência", d: "Bipe o produto e insira: Lote, Validade e Quantidade Total." },
+                    { icon: "fa-print", t: "Etiqueta do Palete", d: "Clique em 'Create BOX' para gerar e imprimir a identificação." },
+                    { icon: "fa-check-double", t: "Finalização", d: "Conferência 100% física vs sistema antes de encerrar." }
+                ]
+            }
+        };
+
+        function abrirModulo(mod) {
+            moduloAtivo = mod;
+            document.getElementById('modalEstudo').style.display = 'block';
+            document.getElementById('modalTitulo').innerText = mod.toUpperCase();
+            document.getElementById('infoTecnica').innerHTML = "<h3>Padrão Geral Rodoluki</h3><p>Selecione um cliente abaixo para ver os passos técnicos detalhados.</p>";
+            
+            const clientes = ["Rappi", "Dengo", "Tunap", "Savencia", "Rascal", "Lindt", "Hersheys"];
+            let htmlOp = "";
+            clientes.forEach(cli => {
+                htmlOp += `<div class="btn-op" onclick="showAlert('${cli}')">${cli}</div>`;
+            });
+            document.getElementById('gridOperacoes').innerHTML = htmlOp;
+        }
+
+        function showAlert(cliente) {
+            operacaoPendente = cliente;
+            document.getElementById('alertTitle').innerText = cliente;
+            document.getElementById('alertMsg').innerText = `Carregando guia de ${moduloAtivo} para ${cliente}.`;
+            document.getElementById('customAlert').style.display = 'flex';
+        }
+
+        function closeAlert() {
+            document.getElementById('customAlert').style.display = 'none';
+            const fluxo = fluxosClientes[operacaoPendente];
+            
+            if(fluxo && fluxo[moduloAtivo]) {
+                const passos = fluxo[moduloAtivo];
+                let btnPDF = fluxo.pdfUrl ? `<a href="${fluxo.pdfUrl}" target="_blank" class="btn-pdf"><i class="fas fa-file-pdf"></i> VER MANUAL COMPLETO</a>` : '';
+                
+                let htmlContent = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                                    <h3>Procedimento: ${operacaoPendente}</h3>${btnPDF}</div>`;
+                
+                passos.forEach((p, index) => {
+                    htmlContent += `
+                        <div class="passo-item">
+                            <div class="passo-num">${index + 1}</div>
+                            <div>
+                                <strong style="color:var(--primary); display:block;"><i class="fas ${p.icon}"></i> ${p.t}</strong>
+                                <span style="font-size:0.9rem; color:#475569;">${p.d}</span>
+                            </div>
+                        </div>`;
+                });
+                htmlContent += `<button class="btn-primary" style="width:auto; margin-top:15px; background:#64748b;" onclick="abrirModulo(moduloAtivo)">VOLTAR</button>`;
+                document.getElementById('infoTecnica').innerHTML = htmlContent;
+            } else {
+                alert("Fluxo em fase de mapeamento.");
+            }
+        }
+
+        function fecharModal() { document.getElementById('modalEstudo').style.display = 'none'; }
+    </script>
+</body>
+</html>
