@@ -9,78 +9,82 @@
     <style>
         :root { --primary: #1A2B56; --accent: #252d8f; --light: #5FC9FF; --bg: #F8FAFC; --danger: #e11d48; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg); color: #1e293b; overflow-x: hidden; }
+        body { background-color: var(--bg); color: #1e293b; }
 
-        /* LOGIN */
-        #authWrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary); z-index: 5000; display: flex; justify-content: center; align-items: center; }
-        .auth-box { background: white; padding: 40px; border-radius: 24px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
-        .auth-logo { font-size: 1.8rem; font-weight: 800; color: var(--primary); margin-bottom: 20px; }
-        .auth-logo span { color: var(--light); }
-        .auth-input { width: 100%; padding: 14px; margin-bottom: 15px; border-radius: 12px; border: 1px solid #e2e8f0; background: #f8fafc; outline: none; }
-        .btn-login { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; }
+        /* TELAS DE ACESSO (LOGIN E REDEFINIÇÃO) */
+        .auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary); z-index: 5000; display: flex; justify-content: center; align-items: center; }
+        .auth-box { background: white; padding: 40px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 15px 30px rgba(0,0,0,0.2); }
+        .auth-logo { max-width: 180px; margin-bottom: 25px; }
+        .auth-input { width: 100%; padding: 14px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #ddd; outline: none; background: #fff; font-size: 1rem; }
+        .btn-auth { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .btn-auth:hover { background: var(--accent); }
 
-        /* NAVBAR */
+        /* INTERFACE PRINCIPAL */
         .nav-bar { background: var(--primary); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
-        .nav-right { display: flex; gap: 20px; align-items: center; }
-        .btn-exit-site { background: rgba(255,255,255,0.1); color: white; border: 1px solid white; padding: 8px 15px; border-radius: 8px; cursor: pointer; text-decoration: none; font-size: 0.85rem; font-weight: 600; transition: 0.3s; }
-        .btn-exit-site:hover { background: white; color: var(--primary); }
-
-        /* HOME CARDS */
         .hero { background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); color: white; padding: 60px 20px; text-align: center; }
         .container { max-width: 1100px; margin: -40px auto 50px; padding: 0 20px; }
         .grid-modulos { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; }
-        .card-main { background: white; padding: 45px 25px; border-radius: 20px; text-align: center; cursor: pointer; box-shadow: 0 10px 15px rgba(0,0,0,0.05); transition: 0.3s; border: 1px solid #f1f5f9; }
-        .card-main:hover { transform: translateY(-10px); border-color: var(--light); }
-        .card-main i { font-size: 3.5rem; color: var(--primary); margin-bottom: 20px; display: block; }
+        .card-main { background: white; padding: 45px 25px; border-radius: 18px; text-align: center; cursor: pointer; box-shadow: 0 8px 15px rgba(0,0,0,0.05); transition: 0.3s; border: 1px solid #e2e8f0; }
+        .card-main:hover { transform: translateY(-8px); border-color: var(--light); }
+        .card-main i { font-size: 3.2rem; color: var(--primary); margin-bottom: 18px; display: block; }
 
         /* MODAL */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.9); z-index: 2000; padding: 20px; backdrop-filter: blur(8px); }
-        .modal-content { background: white; width: 100%; max-width: 900px; margin: auto; height: 90vh; border-radius: 24px; display: flex; flex-direction: column; overflow: hidden; }
-        .modal-header { background: var(--primary); color: white; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; }
-        .modal-body { padding: 30px; overflow-y: auto; flex-grow: 1; display: flex; flex-direction: column; text-align: center; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; padding: 15px; backdrop-filter: blur(5px); }
+        .modal-content { background: white; width: 100%; max-width: 850px; margin: auto; height: 90vh; border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; }
+        .modal-header { background: var(--primary); color: white; padding: 18px 25px; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { padding: 25px; overflow-y: auto; flex-grow: 1; display: flex; flex-direction: column; text-align: center; }
 
-        /* CONTEÚDO TÉCNICO */
-        .info-box { background: #f8fafc; padding: 25px; border-radius: 16px; border-left: 6px solid var(--primary); text-align: left; width: 100%; margin: 20px 0; }
-        .nav-controls { display: flex; justify-content: center; align-items: center; gap: 20px; margin-bottom: 20px; }
-        .btn-nav { background: var(--primary); color: white; border: none; padding: 12px 28px; border-radius: 12px; cursor: pointer; font-weight: 700; }
-        .btn-nav:disabled { background: #e2e8f0; color: #94a3b8; }
+        /* ESTILOS INTERNOS */
+        .info-box { background: #f1f5f9; padding: 25px; border-radius: 12px; border-left: 6px solid var(--primary); text-align: left; width: 100%; margin: 15px 0; }
+        .nav-controls { display: flex; justify-content: center; align-items: center; gap: 18px; margin: 20px 0; }
+        .btn-nav { background: var(--primary); color: white; border: none; padding: 10px 22px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .btn-nav:disabled { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; }
 
-        /* BOTÃO VOLTAR PARA CURSOS */
-        .btn-home-back { display: inline-flex; align-items: center; gap: 10px; background: #64748b; color: white; padding: 12px 24px; border-radius: 12px; border: none; cursor: pointer; font-weight: 700; margin-top: 15px; transition: 0.2s; }
-        .btn-home-back:hover { background: #475569; transform: scale(1.05); }
+        /* RAPPI SHOWCASE */
+        .rappi-showcase { background: #fff1f2; border: 2px solid #fda4af; padding: 30px; border-radius: 20px; width: 100%; margin-top: 10px; }
+        .btn-pdf-grande { display: inline-flex; align-items: center; gap: 12px; background: #e11d48; color: white; padding: 18px 35px; border-radius: 50px; text-decoration: none; font-weight: 800; font-size: 1.1rem; box-shadow: 0 10px 20px rgba(225, 29, 72, 0.2); transition: 0.3s; margin-top: 15px; }
 
-        /* CLIENTES */
-        .secao-operacoes { background: #f1f5f9; padding: 20px; border-radius: 20px; margin-top: auto; }
+        .btn-home-back { display: inline-flex; align-items: center; gap: 10px; background: #64748b; color: white; padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; margin: 10px auto; }
+        .secao-operacoes { background: #f8fafc; padding: 20px; border-radius: 15px; border: 1px solid #e2e8f0; margin-top: auto; }
         .grid-operacoes { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; margin-top: 10px; }
-        .btn-op { background: white; border: 1px solid #e2e8f0; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 0.8rem; color: var(--primary); }
-        .btn-op:hover { background: var(--primary); color: white; }
-
-        .btn-pdf { display: inline-flex; align-items: center; gap: 10px; background: var(--danger); color: white; padding: 14px 24px; border-radius: 12px; text-decoration: none; font-weight: 700; }
+        .btn-op { background: white; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.75rem; color: var(--primary); }
     </style>
 </head>
 <body>
 
-    <div id="authWrapper">
+    <div id="loginScreen" class="auth-overlay">
         <div class="auth-box">
-            <div class="auth-logo">RODOLUKI<span>ACADEMY</span></div>
-            <input type="text" id="userInput" class="auth-input" placeholder="Usuário">
+            <img src="assets/logo.png" alt="Rodoluki" class="auth-logo" onerror="this.src='https://rodoluki.com.br/wp-content/uploads/2021/08/logo-rodoluki.png'">
+            <h3 style="margin-bottom: 20px; color: #1A2B56;">Acesso Academy</h3>
+            <input type="text" id="userInput" class="auth-input" placeholder="Usuário (Ex: Carlos.E)">
             <input type="password" id="passInput" class="auth-input" placeholder="Senha">
-            <button onclick="fazerLogin()" class="btn-login">ENTRAR NO PORTAL</button>
+            <button onclick="handleLogin()" class="btn-auth">ENTRAR</button>
+        </div>
+    </div>
+
+    <div id="resetScreen" class="auth-overlay" style="display: none;">
+        <div class="auth-box">
+            <i class="fas fa-lock-open" style="font-size: 3rem; color: var(--danger); margin-bottom: 15px;"></i>
+            <h3 style="margin-bottom: 10px; color: #1A2B56;">Primeiro Acesso</h3>
+            <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 20px;">Para sua segurança, crie uma nova senha para o usuário <strong id="displayUser"></strong>.</p>
+            <input type="password" id="newPass" class="auth-input" placeholder="Nova Senha">
+            <input type="password" id="confirmPass" class="auth-input" placeholder="Confirme a Nova Senha">
+            <button onclick="saveNewPassword()" class="btn-auth">DEFINIR SENHA E ENTRAR</button>
         </div>
     </div>
 
     <div id="mainContent" style="display:none;">
         <nav class="nav-bar">
-            <div style="color:white; font-weight: 800; font-size: 1.3rem;">RODOLUKI <span style="color:var(--light)">ACADEMY</span></div>
-            <div class="nav-right">
-                <a href="index.html" class="btn-exit-site"><i class="fas fa-arrow-left"></i> Voltar ao Site Oficial</a>
-                <i class="fas fa-power-off" onclick="location.reload()" style="color:white; cursor:pointer;" title="Sair do Portal"></i>
+            <div style="color:white; font-weight: 800; font-size: 1.2rem;">RODOLUKI <span style="color:var(--light)">ACADEMY</span></div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <span id="userNameHeader" style="color: white; font-size: 0.8rem; border-right: 1px solid rgba(255,255,255,0.3); padding-right: 15px;"></span>
+                <i class="fas fa-power-off" onclick="logout()" style="color:white; cursor:pointer; font-size: 1.3rem;"></i>
             </div>
         </nav>
 
         <section class="hero">
             <h1>Manuais de Operação</h1>
-            <p>Inbound, Conferência e Fluxos Específicos</p>
+            <p>Selecione um módulo para iniciar o treinamento</p>
         </section>
 
         <div class="container">
@@ -109,24 +113,20 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2 id="tituloModal">PROCEDIMENTO</h2>
-                <i class="fas fa-times" onclick="fecharModal()" style="cursor:pointer; font-size: 1.5rem;"></i>
+                <i class="fas fa-times" onclick="fecharModal()" style="cursor:pointer; font-size: 1.4rem;"></i>
             </div>
             <div class="modal-body">
-                
                 <div id="areaConteudo"></div>
-
                 <div id="controlesNavegacao" class="nav-controls">
                     <button id="btnPrev" class="btn-nav" onclick="mudarPagina(-1)">Anterior</button>
-                    <span id="indicadorPagina" style="font-weight:800; color:var(--primary);">Página 1 de 10</span>
+                    <span id="indicadorPagina" style="font-weight:bold; color:var(--primary);">Página 1 de 10</span>
                     <button id="btnNext" class="btn-nav" onclick="mudarPagina(1)">Próximo</button>
                 </div>
-
                 <button class="btn-home-back" onclick="fecharModal()">
-                    <i class="fas fa-th-large"></i> Ver todos os Cursos
+                    <i class="fas fa-home"></i> Voltar à Página Inicial
                 </button>
-
                 <div class="secao-operacoes">
-                    <h4 style="font-size: 0.7rem; color: #64748b; text-transform: uppercase;">Fluxos Específicos</h4>
+                    <h4 style="font-size: 0.7rem; color: #64748b; text-transform: uppercase; font-weight:800;">Fluxos por Cliente</h4>
                     <div class="grid-operacoes" id="gridOperacoes"></div>
                 </div>
             </div>
@@ -134,27 +134,75 @@
     </div>
 
     <script>
-        function fazerLogin() {
+        // SISTEMA DE USUÁRIOS (SALVO NO NAVEGADOR)
+        const usuariosIniciais = {
+            "Carlos.E": "123",
+            "Tiago.G": "123",
+            "Diego.B": "123",
+            "Guilherme.L": "123",
+            "Jailson.B": "123",
+            "Ayslan.N": "123"
+        };
+
+        let db = JSON.parse(localStorage.getItem('academy_users')) || usuariosIniciais;
+        let currentUser = "";
+
+        function handleLogin() {
             const u = document.getElementById('userInput').value;
             const p = document.getElementById('passInput').value;
-            if(u === "rodoluki" && p === "123") {
-                document.getElementById('authWrapper').style.display = 'none';
-                document.getElementById('mainContent').style.display = 'block';
-            } else { alert("Acesso negado!"); }
+
+            if (db[u] && db[u] === p) {
+                currentUser = u;
+                if (p === "123") {
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('resetScreen').style.display = 'flex';
+                    document.getElementById('displayUser').innerText = u;
+                } else {
+                    entrarNoSistema();
+                }
+            } else {
+                alert("Usuário ou senha incorretos!");
+            }
         }
 
+        function saveNewPassword() {
+            const p1 = document.getElementById('newPass').value;
+            const p2 = document.getElementById('confirmPass').value;
+
+            if (p1.length < 3) return alert("A senha deve ter pelo menos 3 caracteres.");
+            if (p1 === "123") return alert("A nova senha não pode ser '123'.");
+            if (p1 !== p2) return alert("As senhas não coincidem.");
+
+            db[currentUser] = p1;
+            localStorage.setItem('academy_users', JSON.stringify(db));
+            alert("Senha alterada com sucesso!");
+            entrarNoSistema();
+        }
+
+        function entrarNoSistema() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('resetScreen').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            document.getElementById('userNameHeader').innerText = "Logado como: " + currentUser;
+        }
+
+        function logout() {
+            location.reload();
+        }
+
+        // --- LÓGICA DO CONTEÚDO (PASSO A PASSO E RAPPI) ---
         const dadosMacro = {
             "recebimento": [
-                { icon: "fa-truck", t: "1. Triagem de Veículos", d: "Verificação da placa e documentos na chegada à portaria." },
-                { icon: "fa-file-invoice", t: "2. Conferência de Notas", d: "Validação do XML e Danfe com o pedido de compra (P.O)." },
-                { icon: "fa-user-shield", t: "3. Segurança na Doca", d: "Uso obrigatório de calços e EPIs durante a descarga." },
-                { icon: "fa-boxes", t: "4. Descarga e Separação", d: "Organização dos itens por SKU e data de validade." },
-                { icon: "fa-tablet-alt", t: "5. Login Coletor", d: "Acesso ao WMS para início do processo de bipagem." },
-                { icon: "fa-check-double", t: "6. Conferência Cega", d: "Bipagem de 100% da carga para garantir acuracidade." },
-                { icon: "fa-tag", t: "7. Etiquetagem LPN", d: "Aplicação da etiqueta de palete na face frontal para leitura." },
-                { icon: "fa-exclamation-triangle", t: "8. Registro de Avaria", d: "Segregação e registro fotográfico de itens danificados." },
-                { icon: "fa-save", t: "9. Fechamento", d: "Finalização do recebimento para atualização de saldo." },
-                { icon: "fa-truck-moving", t: "10. Liberação", d: "Entrega do canhoto assinado e saída segura do motorista." }
+                { icon: "fa-truck", t: "1. Triagem de Veículos", d: "Verificação da placa, conferência de agendamento no portal e verificação de ordem de chegada na portaria." },
+                { icon: "fa-file-invoice", t: "2. Conferência de Notas", d: "Validação obrigatória do XML e Danfe com o pedido de compra (P.O) liberado no sistema." },
+                { icon: "fa-user-shield", t: "3. Segurança na Doca", d: "Instalação obrigatória de calços de roda e conferência de EPIs dos colaboradores durante a descarga." },
+                { icon: "fa-boxes", t: "4. Descarga e Separação", d: "Organização física dos itens por SKU, lote e data de validade para facilitar a conferência técnica." },
+                { icon: "fa-tablet-alt", t: "5. Login Coletor", d: "Acesso ao coletor de dados WMS, selecionando a doca correta e o tipo de recebimento cego." },
+                { icon: "fa-check-double", t: "6. Conferência Cega", d: "Realização da bipagem de 100% da carga para garantir que a quantidade física bata com o sistema." },
+                { icon: "fa-tag", t: "7. Etiquetagem LPN", d: "Geração e aplicação da etiqueta de identificação de palete (LPN) sempre na face frontal para leitura fácil." },
+                { icon: "fa-exclamation-triangle", t: "8. Registro de Avaria", d: "Segregação imediata de itens danificados, registro fotográfico e inserção do código de avaria no sistema." },
+                { icon: "fa-save", t: "9. Fechamento", d: "Finalização do processo no coletor e validação das divergências para atualização oficial do saldo em estoque." },
+                { icon: "fa-truck-moving", t: "10. Liberação", d: "Assinatura do canhoto da NF, entrega de documentos ao motorista e sinalização para saída segura da doca." }
             ]
         };
 
@@ -173,15 +221,15 @@
         function atualizarTela() {
             const lista = dadosMacro[moduloAtivo] || dadosMacro["recebimento"];
             const item = lista[paginaAtual];
+            document.getElementById('controlesNavegacao').style.display = 'flex';
             document.getElementById('areaConteudo').innerHTML = `
-                <i class="fas ${item.icon}" style="font-size: 4rem; color: var(--primary); margin-bottom: 15px;"></i>
-                <h2 style="color:var(--primary); font-size: 2rem;">${item.t}</h2>
+                <i class="fas ${item.icon}" style="font-size: 3.5rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h2 style="color:var(--primary); margin-bottom:10px;">${item.t}</h2>
                 <div class="info-box"><p>${item.d}</p></div>
             `;
             document.getElementById('indicadorPagina').innerText = `Página ${paginaAtual + 1} de 10`;
             document.getElementById('btnPrev').disabled = (paginaAtual === 0);
-            document.getElementById('btnNext').disabled = (paginaAtual === 9);
-            document.getElementById('controlesNavegacao').style.display = 'flex';
+            document.getElementById('btnNext').disabled = (paginaAtual === (lista.length - 1));
         }
 
         function mudarPagina(dir) {
@@ -190,24 +238,23 @@
         }
 
         function abrirCliente(cli) {
-            document.getElementById('controlesNavegacao').style.display = 'none';
             if(cli === 'Rappi') {
+                document.getElementById('controlesNavegacao').style.display = 'none';
                 document.getElementById('areaConteudo').innerHTML = `
-                    <h2 style="color:var(--primary);">Fluxo Específico: Rappi</h2>
-                    <div class="info-box">
-                        <p><strong>1. NF:</strong> Localizada no acrílico da doca.</p>
-                        <p><strong>2. Sistema:</strong> Utilizar opção RA-30 Cego.</p>
-                        <p><strong>3. P.O:</strong> Consultar rodapé da nota fiscal.</p>
-                        <div style="text-align:center; margin-top:20px;">
-                            <a href="I.T RECEBIMENTO - PDF.pdf" target="_blank" class="btn-pdf">
-                                <i class="fas fa-file-pdf"></i> ABRIR MANUAL PDF COMPLETO
-                            </a>
+                    <div class="rappi-showcase">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 20px;">
+                            <div style="background: #e11d48; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem;"><i class="fas fa-motorcycle"></i></div>
+                            <h2 style="color: #e11d48; font-size: 1.8rem;">Manual Rappi</h2>
                         </div>
+                        <div style="text-align: left; background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #fecdd3;">
+                            <p style="margin-bottom: 10px;"><strong><i class="fas fa-check-circle" style="color: #e11d48"></i> Processo:</strong> Recebimento RA-30 Cego</p>
+                            <p style="margin-bottom: 10px;"><strong><i class="fas fa-check-circle" style="color: #e11d48"></i> Documentação:</strong> Notas fiscais via acrílico</p>
+                            <p><strong><i class="fas fa-check-circle" style="color: #e11d48"></i> P.O:</strong> Localizado no rodapé da Danfe</p>
+                        </div>
+                        <a href="I.T RECEBIMENTO - PDF.pdf" target="_blank" class="btn-pdf-grande"><i class="fas fa-file-pdf"></i> VISUALIZAR PDF COMPLETO</a>
                     </div>
                 `;
-            } else {
-                document.getElementById('areaConteudo').innerHTML = `<h2>Fluxo de ${cli} sob atualização.</h2>`;
-            }
+            } else { alert("Em atualização."); }
         }
 
         function renderizarClientes() {
@@ -216,9 +263,7 @@
             grid.innerHTML = clientes.map(c => `<div class="btn-op" onclick="abrirCliente('${c}')">${c}</div>`).join('');
         }
 
-        function fecharModal() { 
-            document.getElementById('modalTreinamento').style.display = 'none'; 
-        }
+        function fecharModal() { document.getElementById('modalTreinamento').style.display = 'none'; }
     </script>
 </body>
 </html>
